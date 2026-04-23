@@ -884,7 +884,7 @@ seed_bins()
 start_scheduler()
 
 # Domeningizni yozing va qatorni oching:
-set_telegram_webhook("https://smart-waste.onrender.com")
+set_telegram_webhook("https://smart-waste-l3cv.onrender.com/")
 
 atexit.register(lambda: scheduler.shutdown(wait=False) if scheduler.running else None)
 
