@@ -6,6 +6,7 @@ import sqlite3
 import atexit
 import threading
 import json
+import os
 
 app = Flask(__name__)
 app.secret_key = "chiqindixona_secret_key"
@@ -868,9 +869,9 @@ seed_bins()
 start_scheduler()
 
 # Domeningizni yozing va qatorni oching:
-set_telegram_webhook("https://hollis-bladdery-opticly.ngrok-free.dev")
+set_telegram_webhook("https://smart-waste.onrender.com")
 
 atexit.register(lambda: scheduler.shutdown(wait=False) if scheduler.running else None)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
