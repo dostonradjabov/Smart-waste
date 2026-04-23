@@ -815,6 +815,21 @@ def send_daily_now():
     return "Yuborildi"
 
 
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    data = request.json
+    
+    chat_id = data["message"]["chat"]["id"]
+    text = data["message"].get("text", "")
+
+    # oddiy javob
+    requests.post(URL, json={
+        "chat_id": chat_id,
+        "text": f"Siz yozdingiz: {text}"
+    })
+
+    return "ok"
+
 @app.route("/run-monitor-now")
 def run_monitor_now():
     monitor_job()
