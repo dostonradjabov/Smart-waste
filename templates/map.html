@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Xarita</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+<body>
+
+<header>
+  <div class="logo">Xarita tizimi</div>
+  <div class="header-buttons">
+    <a href="/"><button>Orqaga</button></a>
+  </div>
+</header>
+
+<section class="page">
+  <h2>TATU Samarqand filiali, A bino</h2>
+  <div id="fullMap" style="height:600px;"></div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var fullMap = L.map('fullMap').setView([39.679960, 66.981706], 18);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
+}).addTo(fullMap);
+
+let binMarkers = {};
+let truckMarker = L.marker([39.679960, 66.981706]).addTo(fullMap)
+  .bindPopup("Chiqindi mashinasi");
+
+function loadAll() {
+  fetch("/data")
+    .then(r => r.json())
+    .then(data => {
+      Object.keys(data).forEach(key => {
+        const b = data[key];
+        if (b.lat && b.lng) {
+          if (binMarkers[key]) {
+            binMarkers[key].setLatLng([b.lat, b.lng]);
+            binMarkers[key].setPopupContent(
+              `<b>${key}</b><br>${b.location_name}<br>To‘lish: ${b.fill}%<br>Holat: ${b.status}`
+            );
+          } else {
+            binMarkers[key] = L.marker([b.lat, b.lng]).addTo(fullMap)
+              .bindPopup(
+                `<b>${key}</b><br>${b.location_name}<br>To‘lish: ${b.fill}%<br>Holat: ${b.status}`
+              );
+          }
+        }
+      });
+    });
+
+  fetch("/truck_data")
+    .then(r => r.json())
+    .then(data => {
+      truckMarker.setLatLng([data.lat, data.lng]);
+      truckMarker.bindPopup(data.name);
+    });
+}
+
+loadAll();
+setInterval(loadAll, 5000);
+</script>
+
+</body>
+</html>

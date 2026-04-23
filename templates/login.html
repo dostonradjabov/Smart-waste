@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tizimga kirish</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-wrapper">
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-flag">
+          <div class="flag-top">
+            <div class="crescent"></div>
+            <div class="stars">
+              <span>★</span><span>★</span><span>★</span>
+              <span>★</span><span>★</span><span>★</span>
+              <span>★</span><span>★</span><span>★</span>
+              <span>★</span><span>★</span><span>★</span>
+            </div>
+          </div>
+          <div class="flag-red"></div>
+          <div class="flag-middle"></div>
+          <div class="flag-red"></div>
+          <div class="flag-bottom"></div>
+        </div>
+
+        <h1>Aqlli Chiqindixona Tizimini Boshqarish</h1>
+        <p>IoT asosida chiqindi qutilari, transport va kuzatuv tizimi</p>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <h2>Tizimga kirish</h2>
+        <p>Hisobingiz orqali platformaga kiring</p>
+      </div>
+
+      <form method="post" class="auth-form">
+        <div class="input-group">
+          <label for="username">Login</label>
+          <input id="username" type="text" name="username" placeholder="Login kiriting" required>
+        </div>
+
+        <div class="input-group">
+          <label for="password">Parol</label>
+          <input id="password" type="password" name="password" placeholder="Parol kiriting" required>
+        </div>
+
+        <button type="submit" class="auth-btn">Kirish</button>
+      </form>
+
+      <div class="auth-footer">
+        <span>Hisob yo‘qmi?</span>
+        <a href="/register">Ro‘yxatdan o‘tish</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

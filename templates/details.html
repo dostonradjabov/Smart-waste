@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Chiqindi qutisi haqida batafsil</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+#map{
+  height:400px;
+  width:100%;
+  margin-top:20px;
+  border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<h2>Chiqindi qutisi haqida batafsil</h2>
+
+<div class="device">
+  <p>Tartib raqami: {{ bin_info.bin_code }}</p>
+  <p>Holati: {{ bin_info.status }}</p>
+  <p>Masofa: {{ bin_info.distance }} sm</p>
+  <p>To'lish: {{ bin_info.fill }}%</p>
+  <p>Joylashuvi: {{ bin_info.location_name }}</p>
+  <p>Online holati: {{ "Faol" if bin_info.is_online else "Offline" }}</p>
+  <p>Oxirgi yangilanish: {{ bin_info.updated_at }}</p>
+</div>
+
+<h3>Xaritada joylashuvi</h3>
+<div id="map"></div>
+
+<p style="margin-top:20px;">
+  <a href="/"><button>Orqaga</button></a>
+</p>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var lat = {{ bin_info.lat }};
+var lng = {{ bin_info.lng }};
+var title = "{{ bin_info.location_name }}";
+
+var map = L.map('map').setView([lat, lng], 17);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19
+}).addTo(map);
+
+L.marker([lat, lng]).addTo(map).bindPopup(title).openPopup();
+</script>
+
+</body>
+</html>

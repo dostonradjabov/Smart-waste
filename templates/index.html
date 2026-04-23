@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Waste Monitoring Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0b3d91, #1565c0);
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      opacity: 0.92;
+    }
+
+    .clock {
+      background: rgba(255, 255, 255, 0.12);
+      padding: 14px 20px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      font-size: 15px;
+      min-width: 190px;
+      text-align: center;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.16);
+    }
+
+    .summary-card h3,
+    .bin-card h3 {
+      font-size: 17px;
+      margin-bottom: 12px;
+      opacity: 0.95;
+    }
+
+    .summary-number {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .summary-text {
+      font-size: 14px;
+      opacity: 0.88;
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      opacity: 0.88;
+      margin-bottom: 20px;
+    }
+
+    .bins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .bin-card {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.16);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bin-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .bin-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .bin-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    .bin-percent {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      transition: width 0.45s ease;
+    }
+
+    .info-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+    }
+
+    .info-row span:first-child {
+      opacity: 0.9;
+    }
+
+    .info-row strong {
+      text-align: right;
+    }
+
+    .empty-box {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      font-size: 18px;
+      opacity: 0.95;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 700px) {
+      .title {
+        font-size: 28px;
+      }
+
+      .summary-number {
+        font-size: 36px;
+      }
+
+      .bin-percent {
+        font-size: 34px;
+      }
+
+      .section-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <div class="title">Smart Waste Monitoring Dashboard</div>
+        <div class="subtitle">Bir nechta quti monitoring tizimi</div>
+      </div>
+      <div class="clock" id="clock">Yuklanmoqda...</div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="card summary-card">
+        <h3>Jami qutilar</h3>
+        <div class="summary-number" id="totalBins">0</div>
+        <div class="summary-text">Tizimdagi barcha qutilar soni</div>
+      </div>
+
+      <div class="card summary-card">
+        <h3>Online qutilar</h3>
+        <div class="summary-number" id="onlineBins">0</div>
+        <div class="summary-text">Hozir ma’lumot yuborayotgan qutilar</div>
+      </div>
+
+      <div class="card summary-card">
+        <h3>Offline qutilar</h3>
+        <div class="summary-number" id="offlineBins">0</div>
+        <div class="summary-text">Hozir ulanmagan qutilar</div>
+      </div>
+
+      <div class="card summary-card">
+        <h3>Ogohlantirishlar</h3>
+        <div class="summary-number" id="warningBins">0</div>
+        <div class="summary-text">80% va undan yuqori qutilar</div>
+      </div>
+    </div>
+
+    <div class="section-title">Qutilar holati</div>
+    <div class="section-subtitle">
+      Hozircha bitta quti real ulangan bo‘lsa ham, dashboard bir nechta quti uchun tayyor turadi.
+    </div>
+
+    <div class="bins-grid" id="binsContainer"></div>
+
+    <div class="footer-note">
+      Ma’lumotlar har 5 soniyada yangilanadi.
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "/api/bins";
+    const REFRESH_INTERVAL = 5000;
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent = now.toLocaleString("uz-UZ");
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function calculateFillPercent(distanceCm, binHeightCm) {
+      if (!binHeightCm || binHeightCm <= 0) return 0;
+      const raw = ((binHeightCm - distanceCm) / binHeightCm) * 100;
+      return Math.round(clamp(raw, 0, 100));
+    }
+
+    function getStatus(percent, online) {
+      if (!online) {
+        return {
+          text: "Offline",
+          color: "#757575"
+        };
+      }
+
+      if (percent >= 90) {
+        return {
+          text: "To‘la",
+          color: "#d32f2f"
+        };
+      }
+
+      if (percent >= 80) {
+        return {
+          text: "Warning",
+          color: "#f57c00"
+        };
+      }
+
+      if (percent >= 50) {
+        return {
+          text: "O‘rtacha",
+          color: "#fbc02d"
+        };
+      }
+
+      return {
+        text: "Normal",
+        color: "#2e7d32"
+      };
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return value;
+      return d.toLocaleString("uz-UZ");
+    }
+
+    function createBinCard(bin) {
+      const online = Boolean(bin.device_online);
+      const binHeight = Number(bin.bin_height_cm || 22.4);
+      const distance = Number(bin.distance_cm || 0);
+      const percent = online ? calculateFillPercent(distance, binHeight) : 0;
+      const status = getStatus(percent, online);
+
+      return `
+        <div class="bin-card">
+          <div class="bin-top">
+            <div class="bin-name">${bin.name || "Noma’lum quti"}</div>
+            <div class="badge" style="background:${status.color};">${status.text}</div>
+          </div>
+
+          <div class="bin-percent">${percent}%</div>
+
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              style="width:${percent}%; background:${status.color};"
+            >
+              ${percent}%
+            </div>
+          </div>
+
+          <div class="info-list">
+            <div class="info-row">
+              <span>ID</span>
+              <strong>${bin.id ?? "-"}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Masofa</span>
+              <strong>${online ? distance.toFixed(1) + " cm" : "-"}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Quti balandligi</span>
+              <strong>${binHeight.toFixed(1)} cm</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Holat</span>
+              <strong>${status.text}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Qurilma</span>
+              <strong>${online ? "Online" : "Ulanmagan"}</strong>
+            </div>
+
+            <div class="info-row">
+              <span>Oxirgi yangilanish</span>
+              <strong>${formatDate(bin.updated_at)}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBins(bins) {
+      const container = document.getElementById("binsContainer");
+
+      if (!Array.isArray(bins) || bins.length === 0) {
+        document.getElementById("totalBins").textContent = "0";
+        document.getElementById("onlineBins").textContent = "0";
+        document.getElementById("offlineBins").textContent = "0";
+        document.getElementById("warningBins").textContent = "0";
+
+        container.innerHTML = `
+          <div class="empty-box">
+            Hozircha qutilar ma’lumoti topilmadi.
+          </div>
+        `;
+        return;
+      }
+
+      let onlineCount = 0;
+      let offlineCount = 0;
+      let warningCount = 0;
+
+      bins.forEach(bin => {
+        const online = Boolean(bin.device_online);
+        const binHeight = Number(bin.bin_height_cm || 22.4);
+        const distance = Number(bin.distance_cm || 0);
+        const percent = online ? calculateFillPercent(distance, binHeight) : 0;
+
+        if (online) onlineCount++;
+        else offlineCount++;
+
+        if (online && percent >= 80) warningCount++;
+      });
+
+      document.getElementById("totalBins").textContent = bins.length;
+      document.getElementById("onlineBins").textContent = onlineCount;
+      document.getElementById("offlineBins").textContent = offlineCount;
+      document.getElementById("warningBins").textContent = warningCount;
+
+      container.innerHTML = bins.map(createBinCard).join("");
+    }
+
+    async function fetchBins() {
+      try {
+        const response = await fetch(API_URL + "?t=" + Date.now());
+
+        if (!response.ok) {
+          throw new Error("Server javob bermadi");
+        }
+
+        const data = await response.json();
+        renderBins(data.bins || []);
+      } catch (error) {
+        console.error("Ma’lumot olishda xatolik:", error);
+
+        renderBins([
+          {
+            id: 1,
+            name: "Plastic",
+            distance_cm: 8.5,
+            bin_height_cm: 22.4,
+            device_online: true,
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 2,
+            name: "Metal",
+            distance_cm: 0,
+            bin_height_cm: 22.4,
+            device_online: false,
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 3,
+            name: "Glass",
+            distance_cm: 0,
+            bin_height_cm: 22.4,
+            device_online: false,
+            updated_at: new Date().toISOString()
+          },
+          {
+            id: 4,
+            name: "Mixed",
+            distance_cm: 0,
+            bin_height_cm: 22.4,
+            device_online: false,
+            updated_at: new Date().toISOString()
+          }
+        ]);
+      }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    fetchBins();
+    setInterval(fetchBins, REFRESH_INTERVAL);
+  </script>
+</body>
+</html>

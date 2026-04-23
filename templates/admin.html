@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin panel</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">Admin panel</div>
+    <div class="header-buttons">
+      <a href="/"><button>Bosh sahifa</button></a>
+      <a href="/logout"><button>Chiqish</button></a>
+    </div>
+  </header>
+
+  <section class="page">
+    <h2>Foydalanuvchilar ro‘yxati</h2>
+    <table class="users-table">
+      <tr>
+        <th>ID</th>
+        <th>Login</th>
+        <th>Rol</th>
+        <th>Yaratilgan vaqt</th>
+        <th>Amal</th>
+      </tr>
+      {% for u in users %}
+      <tr>
+        <td>{{u[0]}}</td>
+        <td>{{u[1]}}</td>
+        <td>{{u[2]}}</td>
+        <td>{{u[3]}}</td>
+        <td>
+          {% if u[1] != 'admin' %}
+          <a href="/delete_user/{{u[0]}}">O‘chirish</a>
+          {% else %}
+          Asosiy admin
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+</body>
+</html>
