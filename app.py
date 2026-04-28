@@ -104,10 +104,12 @@ def clamp(value, min_value, max_value):
     return max(min_value, min(max_value, value))
 
 def calculate_fill_percent(distance_cm, bin_height_cm):
-    if distance_cm is None or bin_height_cm is None or bin_height_cm <= 0:
+    if distance_cm is None:
         return 0
-    raw = ((bin_height_cm - distance_cm) / bin_height_cm) * 100
-    return round(clamp(raw, 0, 100))
+
+    percent = (EMPTY_DISTANCE - distance_cm) / (EMPTY_DISTANCE - FULL_DISTANCE) * 100
+
+    return max(0, min(100, int(percent)))
 
 def get_status_text(percent, online):
     if not online: return "Offline"
