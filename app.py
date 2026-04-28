@@ -24,6 +24,9 @@ HOURLY_REPORT_EVERY_HOURS = 1
 DAILY_REPORT_HOUR = 21
 DAILY_REPORT_MINUTE = 0
 
+EMPTY_DISTANCE = 22.4   # quti bo‘sh
+FULL_DISTANCE = 6       # quti to‘la (taxminiy)
+
 DEFAULT_BINS = [
     {"id": 1, "name": "Plastic", "bin_height_cm": 22.4},
     {"id": 2, "name": "Metal",   "bin_height_cm": 22.4},
