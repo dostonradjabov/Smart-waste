@@ -770,31 +770,48 @@ def api_bins():
 
 @app.route("/api/update-bin", methods=["GET", "POST"])
 def api_update_bin():
-    data = request.get_json(silent=True) or {}
+    try:
+        data = request.get_json(silent=True) or {}
 
-    bin_id = data.get("id") or request.values.get("id")
-    distance_cm = data.get("distance_cm") or request.values.get("distance_cm")
-    bin_height_cm = data.get("bin_height_cm") or request.values.get("bin_height_cm")
-    name = data.get("name") or request.values.get("name")
+        bin_id = data.get("id") or request.values.get("id")
+        distance_cm = data.get("distance_cm") or request.values.get("distance_cm")
+        bin_height_cm = data.get("bin_height_cm") or request.values.get("bin_height_cm")
+        name = data.get("name") or request.values.get("name")
 
-    if bin_id is None or distance_cm is None:
-        return jsonify({"success": False}), 400
+        if bin_id is None or distance_cm is None:
+            return jsonify({"success": False, "error": "parametr yetishmayapti"}), 400
 
-    bin_id = int(bin_id)
-    distance_cm = float(distance_cm)
+        # 🔥 TYPE CONVERT (XATOLIKSIZ)
+        try:
+            bin_id = int(bin_id)
+            distance_cm = float(distance_cm)
+        except:
+            return jsonify({"success": False, "error": "noto‘g‘ri format"}), 400
 
-    update_bin_state(bin_id, distance_cm, bin_height_cm, name)
+        if bin_height_cm not in (None, ""):
+            try:
+                bin_height_cm = float(bin_height_cm)
+            except:
+                bin_height_cm = None
+        else:
+            bin_height_cm = None
 
-    # 🔥 REAL-TIME ALERT (ENG MUHIM)
-    bins = get_current_bins()
-    check_alerts_and_send(bins)
+        update_bin_state(bin_id, distance_cm, bin_height_cm, name)
 
-    updated_bin = next((b for b in bins if b["id"] == bin_id), None)
+        # 🔥 REAL-TIME ALERT
+        bins = get_current_bins()
+        check_alerts_and_send(bins)
 
-    return jsonify({
-        "success": True,
-        "bin": updated_bin
-    })
+        updated_bin = next((b for b in bins if b["id"] == bin_id), None)
+
+        return jsonify({
+            "success": True,
+            "bin": updated_bin
+        })
+
+    except Exception as e:
+        print("🔥 SERVER ERROR:", e)
+        return jsonify({"success": False, "error": str(e)}), 500
 
 
 @app.route("/telegram-webhook", methods=["POST"])
